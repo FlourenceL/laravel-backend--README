@@ -293,11 +293,18 @@ class TaskController extends Controller
      */
     public function index(): JsonResponse
     {
-        $tasks = Task::all();
+        // Use pagination for better performance with large datasets
+        $tasks = Task::paginate(15);
         
         return response()->json([
             'success' => true,
-            'data' => $tasks
+            'data' => $tasks->items(),
+            'meta' => [
+                'current_page' => $tasks->currentPage(),
+                'total' => $tasks->total(),
+                'per_page' => $tasks->perPage(),
+                'last_page' => $tasks->lastPage(),
+            ]
         ], 200);
     }
 
@@ -413,7 +420,7 @@ curl -X POST http://localhost:8000/api/v1/tasks \
     "title": "Complete Laravel Tutorial",
     "description": "Learn how to build CRUD APIs",
     "status": "in_progress",
-    "due_date": "2024-12-31"
+    "due_date": "2026-12-31"
   }'
 ```
 
@@ -522,21 +529,21 @@ class TaskSeeder extends Seeder
             'title' => 'Learn Laravel Basics',
             'description' => 'Complete the Laravel fundamentals course',
             'status' => 'completed',
-            'due_date' => '2024-01-15',
+            'due_date' => '2026-01-15',
         ]);
 
         Task::create([
             'title' => 'Build CRUD API',
             'description' => 'Create a RESTful API with Laravel',
             'status' => 'in_progress',
-            'due_date' => '2024-02-01',
+            'due_date' => '2026-02-01',
         ]);
 
         Task::create([
             'title' => 'Deploy Application',
             'description' => 'Deploy the app to production',
             'status' => 'pending',
-            'due_date' => '2024-03-01',
+            'due_date' => '2026-03-01',
         ]);
     }
 }
