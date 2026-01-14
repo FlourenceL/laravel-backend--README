@@ -489,10 +489,16 @@ use App\Http\Resources\TaskResource;
 
 public function index(): JsonResponse
 {
-    $tasks = Task::all();
+    $tasks = Task::paginate(15);
     return response()->json([
         'success' => true,
-        'data' => TaskResource::collection($tasks)
+        'data' => TaskResource::collection($tasks->items()),
+        'meta' => [
+            'current_page' => $tasks->currentPage(),
+            'total' => $tasks->total(),
+            'per_page' => $tasks->perPage(),
+            'last_page' => $tasks->lastPage(),
+        ]
     ], 200);
 }
 
